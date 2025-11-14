@@ -1,7 +1,7 @@
 'use client'
 
 import { Receipt } from '@/types/receipt'
-import { Trash2, Calendar, Store, DollarSign } from 'lucide-react'
+import { Trash2, Calendar, Store, DollarSign, Package } from 'lucide-react'
 
 interface ReceiptCardProps {
   receipt: Receipt
@@ -35,27 +35,29 @@ export default function ReceiptCard({ receipt, onClick, onDeleted }: ReceiptCard
   return (
     <div
       onClick={onClick}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group"
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer group border border-gray-100 dark:border-gray-700"
     >
-      <div className="relative h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+      <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 overflow-hidden">
         <img
           src={receipt.imageUrl}
           alt="Receipt"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain p-2"
         />
         <button
           onClick={handleDelete}
-          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+          className="absolute top-3 right-3 bg-red-500 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg"
         >
           <Trash2 size={16} />
         </button>
       </div>
 
-      <div className="p-4 space-y-2">
+      <div className="p-5 space-y-3">
         {receipt.merchant && (
           <div className="flex items-center gap-2">
-            <Store size={16} className="text-gray-400" />
-            <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <Store size={16} className="text-white" />
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white truncate flex-1">
               {receipt.merchant}
             </h3>
           </div>
@@ -63,27 +65,27 @@ export default function ReceiptCard({ receipt, onClick, onDeleted }: ReceiptCard
 
         <div className="flex items-center justify-between text-sm">
           {receipt.date && (
-            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
               <Calendar size={14} />
               <span>{receipt.date}</span>
             </div>
           )}
 
           {receipt.total && (
-            <div className="flex items-center gap-1 font-semibold text-green-600 dark:text-green-400">
-              <DollarSign size={14} />
-              <span>{receipt.total.toFixed(2)}</span>
+            <div className="flex items-center gap-1.5 font-bold text-green-600 dark:text-green-400">
+              <DollarSign size={16} />
+              <span className="text-lg">{receipt.total.toFixed(2)}</span>
             </div>
           )}
         </div>
 
         {receipt.items && receipt.items.length > 0 && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {receipt.items.length} item{receipt.items.length !== 1 ? 's' : ''}
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <Package size={14} />
+            <span>{receipt.items.length} item{receipt.items.length !== 1 ? 's' : ''}</span>
           </div>
         )}
       </div>
     </div>
   )
 }
-

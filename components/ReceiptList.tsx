@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Receipt } from '@/types/receipt'
 import ReceiptCard from './ReceiptCard'
-import { Receipt as ReceiptIcon } from 'lucide-react'
+import { Receipt as ReceiptIcon, X, Trash2 } from 'lucide-react'
 
 interface ReceiptListProps {
   receipts: Receipt[]
@@ -15,9 +15,11 @@ export default function ReceiptList({ receipts, onReceiptDeleted }: ReceiptListP
 
   if (receipts.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 text-center">
-        <ReceiptIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-16 text-center border border-gray-100 dark:border-gray-700">
+        <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <ReceiptIcon className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           No receipts yet
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
@@ -90,99 +92,95 @@ function ReceiptDetailModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-700">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-5 flex justify-between items-center z-10">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Receipt Details
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         <div className="p-6 space-y-6">
-          <div>
+          <div className="rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700">
             <img
               src={receipt.imageUrl}
               alt="Receipt"
-              className="w-full max-h-96 object-contain rounded-lg border border-gray-300 dark:border-gray-700"
+              className="w-full max-h-96 object-contain bg-gray-50 dark:bg-gray-900"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {receipt.merchant && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 block">
                   Merchant
                 </label>
-                <p className="text-lg text-gray-900 dark:text-white">{receipt.merchant}</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">{receipt.merchant}</p>
               </div>
             )}
 
             {receipt.date && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 block">
                   Date
                 </label>
-                <p className="text-lg text-gray-900 dark:text-white">{receipt.date}</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">{receipt.date}</p>
               </div>
             )}
 
             {receipt.total && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 block">
                   Total
                 </label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                   ${receipt.total.toFixed(2)}
                 </p>
               </div>
             )}
 
-            <div>
-              <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <div className="bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-cyan-200 dark:border-cyan-800">
+              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 block">
                 Uploaded
               </label>
-              <p className="text-lg text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
                 {new Date(receipt.createdAt).toLocaleDateString()}
               </p>
             </div>
           </div>
 
           {receipt.items && receipt.items.length > 0 && (
-            <div>
-              <label className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-2">
-                Items
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block mb-3">
+                Items ({receipt.items.length})
               </label>
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                <ul className="space-y-2">
-                  {receipt.items.map((item, index) => (
-                    <li key={index} className="flex justify-between">
-                      <span className="text-gray-900 dark:text-white">{item.name}</span>
-                      {item.price && (
-                        <span className="text-gray-600 dark:text-gray-400">
-                          ${item.price.toFixed(2)}
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+              <div className="space-y-2">
+                {receipt.items.map((item, index) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <span className="text-gray-900 dark:text-white font-medium">{item.name}</span>
+                    {item.price && (
+                      <span className="text-gray-600 dark:text-gray-400 font-semibold">
+                        ${item.price.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-2">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block mb-3">
               Extracted Text
             </label>
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 max-h-64 overflow-y-auto">
-              <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-700">
+              <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-mono">
                 {receipt.rawText}
               </pre>
             </div>
@@ -192,8 +190,9 @@ function ReceiptDetailModal({
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold shadow-lg hover:shadow-xl flex items-center gap-2"
             >
+              <Trash2 className="h-5 w-5" />
               {isDeleting ? 'Deleting...' : 'Delete Receipt'}
             </button>
           </div>
@@ -202,4 +201,3 @@ function ReceiptDetailModal({
     </div>
   )
 }
-
