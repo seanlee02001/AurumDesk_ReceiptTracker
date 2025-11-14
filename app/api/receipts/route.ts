@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { requireSubscription } from '@/lib/subscription'
 import { Receipt } from '@/types/receipt'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const supabase = await createClient()
