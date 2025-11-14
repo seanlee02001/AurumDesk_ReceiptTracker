@@ -58,12 +58,12 @@ export default function ReceiptUpload({ onReceiptAdded }: ReceiptUploadProps) {
       
       // Perform OCR
       const { data: { text } } = await worker.recognize(file, {
-        logger: (m) => {
+        logger: (m: any) => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100))
           }
         },
-      })
+      } as any)
 
       await worker.terminate()
 

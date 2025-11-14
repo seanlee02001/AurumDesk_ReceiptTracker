@@ -33,6 +33,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       }
     })
     return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkUserAndSubscription = async () => {

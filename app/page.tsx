@@ -28,6 +28,7 @@ export default function Home() {
       }
     })
     return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkUser = async () => {
