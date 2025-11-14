@@ -77,6 +77,9 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   current_period_start TIMESTAMP WITH TIME ZONE,
   current_period_end TIMESTAMP WITH TIME ZONE,
   cancel_at_period_end BOOLEAN DEFAULT false,
+  is_trial BOOLEAN DEFAULT false,
+  trial_start TIMESTAMP WITH TIME ZONE,
+  trial_end TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()) NOT NULL,
   UNIQUE(user_id)
@@ -85,6 +88,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 -- Create indexes
 CREATE INDEX IF NOT EXISTS subscriptions_user_id_idx ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS subscriptions_stripe_subscription_id_idx ON subscriptions(stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS subscriptions_trial_end_idx ON subscriptions(trial_end);
 
 -- Enable Row Level Security
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;

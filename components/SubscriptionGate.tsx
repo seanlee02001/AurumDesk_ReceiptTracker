@@ -16,6 +16,9 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
     isActive: boolean
     status?: string
     currentPeriodEnd?: Date
+    isTrial?: boolean
+    trialEnd?: string
+    daysRemaining?: number
   } | null>(null)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -73,6 +76,37 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
     return <>{children}</>
   }
 
+  // Show trial banner if on trial
+  if (subscriptionStatus?.isTrial && subscriptionStatus?.isActive) {
+    return (
+      <>
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 shadow-lg">
+          <div className="container mx-auto max-w-7xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5" />
+              <span className="font-medium">
+                Free Trial Active - {subscriptionStatus.daysRemaining} day{subscriptionStatus.daysRemaining !== 1 ? 's' : ''} remaining
+              </span>
+            </div>
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-4 py-1.5 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition font-medium text-sm"
+            >
+              Subscribe Now
+            </button>
+          </div>
+        </div>
+        {children}
+        {showModal && (
+          <SubscriptionModal
+            onClose={() => setShowModal(false)}
+            onSuccess={() => checkSubscription(user.id)}
+          />
+        )}
+      </>
+    )
+  }
+
   if (!subscriptionStatus?.isActive) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -82,10 +116,10 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
               <CreditCard className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Subscription Required
+              Start Your Free Trial
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              You need an active subscription to use Receipt Tracker
+              Get 7 days free to try Receipt Tracker
             </p>
           </div>
 
@@ -131,12 +165,38 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
             </div>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition font-medium"
-          >
-            Subscribe Now
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/subscription/start-trial', {
+                    method: 'POST',
+                  })
+                  if (response.ok) {
+                    await checkSubscription(user.id)
+                  } else {
+                    const error = await response.json()
+                    if (error.error?.includes('already has')) {
+                      await checkSubscription(user.id)
+                    } else {
+                      setShowModal(true)
+                    }
+                  }
+                } catch (error) {
+                  setShowModal(true)
+                }
+              }}
+              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition font-medium"
+            >
+              Start 7-Day Free Trial
+            </button>
+            <button
+              onClick={() => setShowModal(true)}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition font-medium"
+            >
+              Subscribe Now
+            </button>
+          </div>
         </div>
 
         {showModal && (

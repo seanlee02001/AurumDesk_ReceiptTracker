@@ -23,10 +23,27 @@ export async function GET() {
     }
 
     if (!data) {
-      return NextResponse.json({
-        isActive: false,
-        status: 'none',
-      })
+      // Check for trial eligibility
+      const { checkSubscription } = await import('@/lib/subscription')
+      const subscriptionStatus = await checkSubscription(user.id)
+      return NextResponse.json(subscriptionStatus)
+    }
+
+    // Check if on trial
+    if (data.is_trial && data.trial_end) {
+      const trialEnd = new Date(data.trial_end)
+      const now = new Date()
+      
+      if (now < trialEnd) {
+        const daysRemaining = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        return NextResponse.json({
+          isActive: true,
+          status: 'trialing',
+          isTrial: true,
+          trialEnd: data.trial_end,
+          daysRemaining,
+        })
+      }
     }
 
     const isActive = data.status === 'active' || data.status === 'trialing'
@@ -36,6 +53,8 @@ export async function GET() {
       status: data.status,
       currentPeriodEnd: data.current_period_end,
       cancelAtPeriodEnd: data.cancel_at_period_end,
+      isTrial: data.is_trial || false,
+      trialEnd: data.trial_end,
     })
   } catch (error) {
     console.error('Error checking subscription:', error)
